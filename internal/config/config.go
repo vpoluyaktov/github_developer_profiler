@@ -138,7 +138,8 @@ func SaveConfig(config *Config) error {
 		SaveDebugJSON:      config.GitHub.SaveDebugJSON,
 	}
 	configCopy.OpenAI = &dto.OpenAIConfig{
-		Model: config.OpenAI.Model,
+		Model:        config.OpenAI.Model,
+		SystemPrompt: config.OpenAI.SystemPrompt,
 	}
 
 	// Encrypt the GitHub token if it's not empty

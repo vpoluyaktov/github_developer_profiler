@@ -24,10 +24,10 @@ type ConfigWindowUI struct {
 	// OpenAI configuration
 	OpenAIKeyEntry        *widget.Entry
 	OpenAIModelEntry      *widget.Entry
+	SystemPromptEntry     *widget.Entry
 	// Buttons
 	SaveButton            *widget.Button
 	CancelButton          *widget.Button
-	ResetButton           *widget.Button
 }
 
 // NewConfigWindowUI creates a new ConfigWindowUI instance
@@ -35,26 +35,30 @@ func NewConfigWindowUI() *ConfigWindowUI {
 	return &ConfigWindowUI{}
 }
 
-// CreateConfigLayout creates the configuration window layout
+// CreateConfigLayout creates the main configuration layout with tabs
 func (ui *ConfigWindowUI) CreateConfigLayout() *fyne.Container {
 	// Initialize components
 	ui.initializeComponents()
 	
-	// Create sections
-	tokenSection := ui.createTokenSection()
-	parametersSection := ui.createParametersSection()
-	openaiSection := ui.createOpenAISection()
+	// Create tab contents
+	credentialsTab := ui.createCredentialsTab()
+	githubTab := ui.createGitHubTab()
+	openaiTab := ui.createOpenAITab()
+	systemPromptTab := ui.createSystemPromptTab()
+	
+	// Create tabs
+	tabs := container.NewAppTabs()
+	tabs.Append(container.NewTabItem("Credentials", credentialsTab))
+	tabs.Append(container.NewTabItem("GitHub", githubTab))
+	tabs.Append(container.NewTabItem("OpenAI", openaiTab))
+	tabs.Append(container.NewTabItem("System Prompt", systemPromptTab))
+	
+	// Create buttons section
 	buttonsSection := ui.createButtonsSection()
 	
-	// Create main layout
-	mainContent := container.NewVBox(
-		tokenSection,
-		widget.NewSeparator(),
-		parametersSection,
-		widget.NewSeparator(),
-		openaiSection,
-		widget.NewSeparator(),
-		buttonsSection,
+	// Create main layout with tabs and buttons
+	mainContent := container.NewBorder(
+		nil, buttonsSection, nil, nil, tabs,
 	)
 	
 	return container.NewPadded(mainContent)
@@ -93,32 +97,17 @@ func (ui *ConfigWindowUI) initializeComponents() {
 	ui.OpenAIModelEntry = widget.NewEntry()
 	ui.OpenAIModelEntry.SetPlaceHolder("gpt-4o")
 	
+	ui.SystemPromptEntry = widget.NewMultiLineEntry()
+	ui.SystemPromptEntry.SetPlaceHolder("Enter custom system prompt for GitHub user evaluation...")
+	ui.SystemPromptEntry.Wrapping = fyne.TextWrapOff // Disable line wrapping
+	ui.SystemPromptEntry.TextStyle = fyne.TextStyle{Monospace: true} // Use monospace font
+	// Remove fixed resize to allow proper expansion in tab layout
+	
 	// Buttons
 	ui.SaveButton = widget.NewButton("Save", nil)
 	ui.SaveButton.Importance = widget.HighImportance
 	
 	ui.CancelButton = widget.NewButton("Cancel", nil)
-	
-	ui.ResetButton = widget.NewButton("Reset to Defaults", nil)
-}
-
-// createTokenSection creates the GitHub token configuration section
-func (ui *ConfigWindowUI) createTokenSection() *fyne.Container {
-	title := widget.NewLabel("GitHub API Configuration")
-	title.TextStyle = fyne.TextStyle{Bold: true}
-	
-	tokenLabel := widget.NewLabel("GitHub Token:")
-	tokenHelp := widget.NewLabel("Required: Provides API access and avoids rate limiting (60 requests/hour without token)")
-	tokenHelp.TextStyle = fyne.TextStyle{Italic: true}
-	
-	tokenSection := container.NewVBox(
-		title,
-		tokenLabel,
-		ui.TokenEntry,
-		tokenHelp,
-	)
-	
-	return tokenSection
 }
 
 // createParametersSection creates the analysis parameters section
@@ -156,41 +145,100 @@ func (ui *ConfigWindowUI) createParametersSection() *fyne.Container {
 	return parametersSection
 }
 
-// createOpenAISection creates the OpenAI configuration section
-func (ui *ConfigWindowUI) createOpenAISection() *fyne.Container {
-	title := widget.NewLabel("OpenAI Configuration")
-	title.TextStyle = fyne.TextStyle{Bold: true}
-	
-	openaiKeyLabel := widget.NewLabel("OpenAI API Key:")
-	openaiKeyHelp := widget.NewLabel("Required: Enables LLM-powered analysis and HTML report generation")
-	openaiKeyHelp.TextStyle = fyne.TextStyle{Italic: true}
-	
-	openaiModelLabel := widget.NewLabel("OpenAI Model:")
-	openaiModelHelp := widget.NewLabel("Model to use for analysis (e.g., gpt-4o, gpt-4, gpt-3.5-turbo)")
-	openaiModelHelp.TextStyle = fyne.TextStyle{Italic: true}
-	
-	openaiSection := container.NewVBox(
-		title,
-		openaiKeyLabel,
-		ui.OpenAIKeyEntry,
-		openaiKeyHelp,
-		openaiModelLabel,
-		ui.OpenAIModelEntry,
-		openaiModelHelp,
-	)
-	
-	return openaiSection
-}
-
 // createButtonsSection creates the buttons section
 func (ui *ConfigWindowUI) createButtonsSection() *fyne.Container {
 	buttonsContainer := container.NewHBox(
 		ui.SaveButton,
 		ui.CancelButton,
-		ui.ResetButton,
 	)
 	
 	return container.NewCenter(buttonsContainer)
+}
+
+// createCredentialsTab creates the credentials configuration tab
+func (ui *ConfigWindowUI) createCredentialsTab() *fyne.Container {
+	// GitHub Token Section
+	githubTitle := widget.NewLabel("GitHub API Configuration")
+	githubTitle.TextStyle = fyne.TextStyle{Bold: true}
+	
+	tokenLabel := widget.NewLabel("GitHub Token:")
+	tokenHelp := widget.NewLabel("Required: Provides API access and avoids rate limiting (60 requests/hour without token)")
+	tokenHelp.TextStyle = fyne.TextStyle{Italic: true}
+	
+	githubSection := container.NewVBox(
+		githubTitle,
+		tokenLabel,
+		ui.TokenEntry,
+		tokenHelp,
+		widget.NewSeparator(),
+	)
+	
+	// OpenAI API Key Section
+	openaiTitle := widget.NewLabel("OpenAI API Configuration")
+	openaiTitle.TextStyle = fyne.TextStyle{Bold: true}
+	
+	openaiKeyLabel := widget.NewLabel("OpenAI API Key:")
+	openaiKeyHelp := widget.NewLabel("Required: Enables LLM-powered analysis and HTML report generation")
+	openaiKeyHelp.TextStyle = fyne.TextStyle{Italic: true}
+	
+	openaiSection := container.NewVBox(
+		openaiTitle,
+		openaiKeyLabel,
+		ui.OpenAIKeyEntry,
+		openaiKeyHelp,
+	)
+	
+	return container.NewVBox(githubSection, openaiSection)
+}
+
+// createGitHubTab creates the GitHub configuration tab with analysis parameters
+func (ui *ConfigWindowUI) createGitHubTab() *fyne.Container {
+	parametersSection := ui.createParametersSection()
+	return container.NewVBox(parametersSection)
+}
+
+// createOpenAITab creates the OpenAI configuration tab with model selector only
+func (ui *ConfigWindowUI) createOpenAITab() *fyne.Container {
+	title := widget.NewLabel("OpenAI Model Configuration")
+	title.TextStyle = fyne.TextStyle{Bold: true}
+	
+	openaiModelLabel := widget.NewLabel("OpenAI Model:")
+	openaiModelHelp := widget.NewLabel("Model to use for analysis (e.g., gpt-4o, gpt-4, gpt-3.5-turbo)")
+	openaiModelHelp.TextStyle = fyne.TextStyle{Italic: true}
+	
+	modelSection := container.NewVBox(
+		title,
+		openaiModelLabel,
+		ui.OpenAIModelEntry,
+		openaiModelHelp,
+	)
+	
+	return container.NewVBox(modelSection)
+}
+
+// createSystemPromptTab creates the system prompt editor tab
+func (ui *ConfigWindowUI) createSystemPromptTab() *fyne.Container {
+	title := widget.NewLabel("System Prompt Configuration")
+	title.TextStyle = fyne.TextStyle{Bold: true}
+	
+	description := widget.NewLabel("Customize the system prompt used for GitHub user evaluation. Leave empty to use the default prompt with industry-standard developer level matrix.")
+	description.Wrapping = fyne.TextWrapWord
+	description.TextStyle = fyne.TextStyle{Italic: true}
+	
+	// Create header section
+	headerSection := container.NewVBox(
+		title,
+		description,
+		widget.NewSeparator(),
+	)
+	
+	// Create the text area with proper multiline support
+	textAreaContainer := container.NewScroll(ui.SystemPromptEntry)
+	
+	// Use border layout to ensure text area expands to fill available space
+	return container.NewBorder(
+		headerSection, nil, nil, nil, textAreaContainer,
+	)
 }
 
 // LoadConfig loads configuration into the UI
@@ -208,6 +256,14 @@ func (ui *ConfigWindowUI) LoadConfig(githubConfig *dto.GitHubConfig, openaiConfi
 	// Load OpenAI configuration
 	ui.OpenAIKeyEntry.SetText(openaiConfig.APIKey)
 	ui.OpenAIModelEntry.SetText(openaiConfig.Model)
+	
+	// Load system prompt - show default if no custom prompt is configured
+	if openaiConfig.SystemPrompt != "" {
+		ui.SystemPromptEntry.SetText(openaiConfig.SystemPrompt)
+	} else {
+		// Display default system prompt for discoverability and easier editing
+		ui.SystemPromptEntry.SetText(dto.DefaultSystemPrompt())
+	}
 }
 
 // GetConfig returns the configuration from the UI
@@ -251,6 +307,10 @@ func (ui *ConfigWindowUI) GetConfig() (*dto.GitHubConfig, *dto.OpenAIConfig, err
 	openaiConfig.APIKey = ui.OpenAIKeyEntry.Text
 	openaiConfig.Model = ui.OpenAIModelEntry.Text
 	
+	// Always save the current system prompt text
+	// The LoadConfig logic will handle showing default when appropriate
+	openaiConfig.SystemPrompt = ui.SystemPromptEntry.Text
+	
 	return githubConfig, openaiConfig, nil
 }
 
@@ -271,7 +331,4 @@ func (ui *ConfigWindowUI) SetCancelButtonCallback(callback func()) {
 	ui.CancelButton.OnTapped = callback
 }
 
-// SetResetButtonCallback sets the callback for the reset button
-func (ui *ConfigWindowUI) SetResetButtonCallback(callback func()) {
-	ui.ResetButton.OnTapped = callback
-}
+

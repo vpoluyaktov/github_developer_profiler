@@ -16,8 +16,9 @@ type GitHubConfig struct {
 
 // OpenAIConfig holds OpenAI API configuration
 type OpenAIConfig struct {
-	APIKey string `json:"api_key"`
-	Model  string `json:"model"`
+	APIKey       string `json:"api_key"`
+	Model        string `json:"model"`
+	SystemPrompt string `json:"system_prompt"`
 }
 
 // DefaultGitHubConfig returns default configuration
@@ -37,8 +38,9 @@ func DefaultGitHubConfig() *GitHubConfig {
 // DefaultOpenAIConfig returns default OpenAI configuration
 func DefaultOpenAIConfig() *OpenAIConfig {
 	return &OpenAIConfig{
-		APIKey: "",
-		Model:  "gpt-4o",
+		APIKey:       "",
+		Model:        "gpt-4o",
+		SystemPrompt: DefaultSystemPrompt(),
 	}
 }
 
