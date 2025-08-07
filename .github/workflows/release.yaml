@@ -1,0 +1,135 @@
+name: Release GitHub Developer Profiler
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    env:
+      VERSION: ''
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            goos: linux
+            goarch: amd64
+            ext: ""
+          - os: macos-latest
+            goos: darwin
+            goarch: amd64
+            ext: ""
+          - os: macos-latest
+            goos: darwin
+            goarch: arm64
+            ext: ""
+          - os: windows-latest
+            goos: windows
+            goarch: amd64
+            ext: ".exe"
+    
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Linux dependencies
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update && sudo apt-get install -y \
+            libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxxf86vm-dev \
+            libgl1-mesa-dev libglu1-mesa-dev build-essential
+
+      - name: Install macOS dependencies
+        if: matrix.os == 'macos-latest'
+        run: |
+          # Install required system libraries for Fyne on macOS
+          brew install pkg-config
+
+      - name: Ensure CGO is enabled
+        run: echo "CGO_ENABLED=1" >> $GITHUB_ENV
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Extract version
+        id: extract_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Build for ${{ matrix.goos }}-${{ matrix.goarch }}
+        shell: bash
+        run: |
+          echo "VERSION is $VERSION"
+          BUILD_DATE=$(date -u '+%Y-%m-%d_%H:%M:%S_UTC')
+          GIT_COMMIT=$(git rev-parse --short HEAD)
+          OUTFILE=GitHub_Developer_Profiler-${{ matrix.goos }}-${VERSION}-${{ matrix.goarch }}${{ matrix.ext }}
+          echo "OUTFILE is $OUTFILE"
+          go build -ldflags="-s -w -X main.version=$VERSION -X main.buildDate=$BUILD_DATE -X main.gitCommit=$GIT_COMMIT" -o $OUTFILE .
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: 1
+          VERSION: ${{ env.VERSION }}
+
+      - name: Install Fyne CLI (macOS only)
+        if: matrix.os == 'macos-latest'
+        run: go install fyne.io/tools/cmd/fyne@latest
+
+      - name: Create macOS app bundle
+        if: matrix.os == 'macos-latest'
+        run: |
+          APP_VERSION=$(echo "$VERSION" | sed -E 's/^v?([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
+          fyne package \
+            --os darwin \
+            --name "GitHub Developer Profiler" \
+            --app-id com.github.developer-profiler \
+            --app-version $APP_VERSION \
+            --app-build 1 \
+            --release \
+            --executable ./GitHub_Developer_Profiler-${{ matrix.goos }}-${VERSION}-${{ matrix.goarch }}${{ matrix.ext }}
+          xattr -cr "GitHub Developer Profiler.app"
+          codesign --force --deep --sign - "GitHub Developer Profiler.app"
+          ZIP_NAME="GitHub_Developer_Profiler-darwin-${VERSION}-${{ matrix.goarch }}.zip"
+          zip -r "$ZIP_NAME" "GitHub Developer Profiler.app"
+          echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
+
+      - name: Upload binary to release
+        if: matrix.os != 'macos-latest'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./GitHub_Developer_Profiler-${{ matrix.goos }}-${{ env.VERSION }}-${{ matrix.goarch }}${{ matrix.ext }}
+          asset_name: GitHub_Developer_Profiler-${{ matrix.goos }}-${{ env.VERSION }}-${{ matrix.goarch }}${{ matrix.ext }}
+          asset_content_type: application/octet-stream
+
+      - name: Upload macOS app bundle to release
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./${{ env.ZIP_NAME }}
+          asset_name: ${{ env.ZIP_NAME }}
+          asset_content_type: application/zip
+
+      - name: Upload raw binary to release (macOS)
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./GitHub_Developer_Profiler-${{ matrix.goos }}-${{ env.VERSION }}-${{ matrix.goarch }}${{ matrix.ext }}
+          asset_name: GitHub_Developer_Profiler-${{ matrix.goos }}-${{ env.VERSION }}-${{ matrix.goarch }}${{ matrix.ext }}
+          asset_content_type: application/octet-stream
