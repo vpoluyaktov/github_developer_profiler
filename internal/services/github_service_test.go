@@ -17,7 +17,8 @@ func TestGitHubServiceRepositoryAnalysis(t *testing.T) {
 	// Load configuration from user's home directory
 	cfg, err := loadConfigFromHome()
 	if err != nil {
-		t.Fatalf("Failed to load config: %v", err)
+		t.Skipf("Skipping test - config not available: %v", err)
+		return
 	}
 
 	if cfg.GitHub.Token == "" {
