@@ -26,6 +26,19 @@ go.work.sum
 
 # env file
 .env
+.env.*
+
+# Configuration files (stored in user home directory)
+config.json
+*.config
+
+# Debug and output files
+*debug*.json
+*audit*.json
+*github_reports*
+
+# Temporary test files
+test_*.go
 
 # Editor/IDE
 # .idea/
