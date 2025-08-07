@@ -203,21 +203,21 @@ func (ctrl *MainController) showConfigWindow() {
 	configContent := ctrl.configUI.CreateConfigLayout()
 	ctrl.configUI.LoadConfig(ctrl.config.GitHub, ctrl.config.OpenAI)
 
+	// Create a custom dialog with the config content
+	configDialog := dialog.NewCustomWithoutButtons("Configuration", configContent, ctrl.window)
+	configDialog.Resize(fyne.NewSize(850, 600)) // Optimized size for scrollable content
+
 	// Set up config callbacks
 	ctrl.configUI.SetSaveButtonCallback(func() {
 		ctrl.saveConfigFromDialog()
+		configDialog.Hide()
 	})
 
 	ctrl.configUI.SetCancelButtonCallback(func() {
-		// Dialog will close automatically
+		configDialog.Hide()
 	})
 
-	ctrl.configUI.SetResetButtonCallback(func() {
-		ctrl.configUI.ResetToDefaults()
-	})
-
-	// Show as modal dialog instead of separate window
-	dialog.ShowCustom("Configuration", "Close", configContent, ctrl.window)
+	configDialog.Show()
 }
 
 // saveConfigFromDialog saves the configuration from modal dialog
