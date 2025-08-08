@@ -48,6 +48,17 @@ func GetConfigDir() (string, error) {
 	return filepath.Join(homeDir, ".config", ConfigDirName), nil
 }
 
+// ConfigExists checks if a configuration file exists
+func ConfigExists() bool {
+	configPath, err := GetConfigPath()
+	if err != nil {
+		return false
+	}
+	
+	_, err = os.Stat(configPath)
+	return !os.IsNotExist(err)
+}
+
 // LoadConfig loads configuration from file
 func LoadConfig() (*Config, error) {
 	configPath, err := GetConfigPath()
@@ -140,6 +151,8 @@ func SaveConfig(config *Config) error {
 	configCopy.OpenAI = &dto.OpenAIConfig{
 		Model:        config.OpenAI.Model,
 		SystemPrompt: config.OpenAI.SystemPrompt,
+		HTMLTemplate: config.OpenAI.HTMLTemplate,
+		CSSStyles:    config.OpenAI.CSSStyles,
 	}
 
 	// Encrypt the GitHub token if it's not empty

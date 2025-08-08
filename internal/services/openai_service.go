@@ -1,10 +1,12 @@
 package services
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	"strings"
+	"text/template"
 	"time"
 
 	"github.com/russross/blackfriday/v2"
@@ -112,236 +114,86 @@ func (s *OpenAIService) getSystemPrompt() string {
 	return dto.DefaultSystemPrompt()
 }
 
-// ConvertMarkdownToHTML converts markdown content to a complete HTML document
+// ConvertMarkdownToHTML converts markdown content to a complete HTML document using configurable templates
 func (s *OpenAIService) ConvertMarkdownToHTML(markdownContent string, username string) string {
 	// Convert markdown to HTML using blackfriday
 	htmlBytes := blackfriday.Run([]byte(markdownContent))
 	htmlContent := string(htmlBytes)
 	
-	// Wrap in HTML document with improved styling
+	// Get the configurable HTML template and CSS styles
+	htmlTemplate := s.getHTMLTemplate()
+	cssStyles := s.getCSSStyles()
+	
+	// Parse the HTML template
+	tmpl, err := template.New("report").Parse(htmlTemplate)
+	if err != nil {
+		// Fallback to a simple template if parsing fails
+		return s.fallbackHTMLGeneration(htmlContent, username)
+	}
+	
+	// Prepare template data
+	templateData := struct {
+		Username  string
+		Content   string
+		CSSStyles string
+	}{
+		Username:  username,
+		Content:   htmlContent,
+		CSSStyles: cssStyles,
+	}
+	
+	// Execute the template
+	var buf bytes.Buffer
+	if err := tmpl.Execute(&buf, templateData); err != nil {
+		// Fallback to simple template if execution fails
+		return s.fallbackHTMLGeneration(htmlContent, username)
+	}
+	
+	return buf.String()
+}
+
+// getHTMLTemplate returns the configurable HTML template from config
+func (s *OpenAIService) getHTMLTemplate() string {
+	// Use the configurable HTML template from config, fallback to default if empty
+	if s.config.HTMLTemplate != "" {
+		return s.config.HTMLTemplate
+	}
+	// Fallback to default HTML template if not configured
+	return dto.DefaultHTMLTemplate()
+}
+
+// getCSSStyles returns the configurable CSS styles from config
+func (s *OpenAIService) getCSSStyles() string {
+	// Use the configurable CSS styles from config, fallback to default if empty
+	if s.config.CSSStyles != "" {
+		return s.config.CSSStyles
+	}
+	// Fallback to default CSS styles if not configured
+	return dto.DefaultCSSStyles()
+}
+
+// fallbackHTMLGeneration provides a simple HTML generation fallback
+func (s *OpenAIService) fallbackHTMLGeneration(htmlContent, username string) string {
 	return fmt.Sprintf(`<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GitHub Developer Assessment - %s</title>
-    
-    <!-- Prism.js CSS for syntax highlighting -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet" />
-    
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.7;
-            color: #2c3e50;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%%, #764ba2 100%%);
-            min-height: 100vh;
-        }
-        .container {
-            background-color: white;
-            padding: 50px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            margin: 20px 0;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding-bottom: 30px;
-            border-bottom: 3px solid #3498db;
-        }
-        h1 { 
-            color: #2c3e50; 
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-        h2 { 
-            color: #34495e; 
-            border-left: 4px solid #3498db;
-            padding-left: 20px;
-            margin: 40px 0 20px 0;
-            font-size: 1.8em;
-            font-weight: 600;
-        }
-        h3 { 
-            color: #7f8c8d; 
-            margin: 30px 0 15px 0;
-            font-size: 1.4em;
-            font-weight: 600;
-        }
-        h4 {
-            color: #95a5a6;
-            margin: 25px 0 10px 0;
-            font-size: 1.2em;
-            font-weight: 600;
-        }
-        p {
-            margin: 12px 0;
-            text-align: left;
-            line-height: 1.6;
-        }
-        /* Better formatting for summary sections */
-        h2 + p, h3 + p {
-            margin-top: 8px;
-        }
-        /* Improve readability for recommendation text */
-        p:has(strong) {
-            margin: 16px 0;
-            padding: 12px;
-            background-color: #f8f9fa;
-            border-left: 4px solid #007bff;
-            border-radius: 4px;
-        }
-        ul, ol {
-            margin: 15px 0;
-            padding-left: 30px;
-        }
-        li {
-            margin: 8px 0;
-        }
-        table {
-            border-collapse: collapse;
-            width: 100%%;
-            margin: 25px 0;
-            background-color: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        th {
-            background: linear-gradient(135deg, #667eea 0%%, #764ba2 100%%);
-            color: white;
-            font-weight: 600;
-            padding: 8px 10px;
-            text-align: left;
-            font-size: 0.9em;
-        }
-        td {
-            padding: 6px 10px;
-            border-bottom: 1px solid #ecf0f1;
-            font-size: 0.9em;
-            line-height: 1.4;
-        }
-        tr:nth-child(even) {
-            background-color: #f8f9fa;
-        }
-        tr:hover {
-            background-color: #e8f4fd;
-        }
-        /* Override Prism.js default styles for better integration */
-        pre[class*="language-"] {
-            background-color: #f8f9fa !important;
-            border: 1px solid #dee2e6;
-            border-radius: 6px;
-            padding: 15px !important;
-            overflow-x: auto;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
-            font-size: 0.85em;
-            line-height: 1.4;
-            margin: 15px 0 !important;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-        }
-        code[class*="language-"] {
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
-            font-size: 0.85em;
-            line-height: 1.4;
-        }
-        /* Fallback for code blocks without language specification */
-        pre:not([class*="language-"]) {
-            background-color: #f8f9fa;
-            color: #2c3e50;
-            border: 1px solid #dee2e6;
-            border-radius: 6px;
-            padding: 15px;
-            overflow-x: auto;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
-            font-size: 0.85em;
-            line-height: 1.4;
-            margin: 15px 0;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-        }
-        pre:not([class*="language-"]) code {
-            background-color: transparent;
-            color: inherit;
-            padding: 0;
-            border-radius: 0;
-            font-size: inherit;
-        }
-        /* Inline code styling */
-        code:not([class*="language-"]) {
-            background-color: #f1f3f4;
-            color: #d73a49;
-            padding: 2px 4px;
-            border-radius: 3px;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
-            font-size: 0.85em;
-        }
-        .highlight {
-            background-color: #fff3cd;
-            padding: 15px;
-            border-left: 4px solid #ffc107;
-            margin: 20px 0;
-            border-radius: 4px;
-        }
-        .print-button {
-            position: fixed;
-            top: 30px;
-            right: 30px;
-            background: linear-gradient(135deg, #667eea 0%%, #764ba2 100%%);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
-        }
-        .print-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-        }
-        @media print {
-            body { 
-                background: white;
-                color: black;
-            }
-            .container { 
-                box-shadow: none;
-                padding: 20px;
-            }
-            .print-button { display: none; }
-            h1, h2, h3 { color: black; }
-        }
+        body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1, h2, h3 { color: #333; }
+        table { border-collapse: collapse; width: 100%%; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
     </style>
 </head>
 <body>
-    <button class="print-button" onclick="window.print()">🖨️ Print Report</button>
     <div class="container">
-        <div class="header">
-            <h1>GitHub Developer Assessment</h1>
-            <p style="font-size: 1.2em; color: #7f8c8d; margin: 0;">Professional Technical Evaluation for <strong>%s</strong></p>
-        </div>
+        <h1>GitHub Developer Assessment - %s</h1>
         %s
     </div>
-    
-    <!-- Prism.js JavaScript for syntax highlighting -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
-    
-    <script>
-        // Initialize Prism.js after page load
-        document.addEventListener('DOMContentLoaded', function() {
-            Prism.highlightAll();
-        });
-    </script>
 </body>
 </html>`, username, username, htmlContent)
 }

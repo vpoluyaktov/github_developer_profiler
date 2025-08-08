@@ -44,6 +44,9 @@ func (ctrl *MainController) Run() {
 	// Create application
 	ctrl.app = app.New()
 
+	// Check if this is the first run (no config file exists)
+	isFirstRun := !config.ConfigExists()
+
 	// Load configuration
 	var err error
 	ctrl.config, err = config.LoadConfig()
@@ -68,6 +71,11 @@ func (ctrl *MainController) Run() {
 
 	// Set up callbacks
 	ctrl.setupCallbacks()
+
+	// If this is the first run, show configuration window first
+	if isFirstRun {
+		ctrl.showFirstRunConfigWindow()
+	}
 
 	// Show window and run
 	ctrl.window.ShowAndRun()
@@ -215,6 +223,54 @@ func (ctrl *MainController) showConfigWindow() {
 
 	ctrl.configUI.SetCancelButtonCallback(func() {
 		configDialog.Hide()
+	})
+
+	configDialog.Show()
+}
+
+// showFirstRunConfigWindow shows the configuration window on first run with a welcome message
+func (ctrl *MainController) showFirstRunConfigWindow() {
+	// Create config UI
+	ctrl.configUI = ui.NewConfigWindowUI()
+	configContent := ctrl.configUI.CreateConfigLayout()
+	ctrl.configUI.LoadConfig(ctrl.config.GitHub, ctrl.config.OpenAI)
+
+	// Create a custom dialog with the config content
+	configDialog := dialog.NewCustomWithoutButtons("Welcome - Initial Setup", configContent, ctrl.window)
+	configDialog.Resize(fyne.NewSize(850, 600))
+
+	// Set up config callbacks for first run
+	ctrl.configUI.SetSaveButtonCallback(func() {
+		ctrl.saveConfigFromDialog()
+		configDialog.Hide()
+		
+		// Show welcome message after saving configuration
+		dialog.ShowInformation("Setup Complete", 
+			"Welcome to GitHub Developer Profiler!\n\n"+
+			"Your configuration has been saved. You can now:\n"+
+			"• Enter a GitHub username to analyze\n"+
+			"• Configure additional settings anytime via the Config button\n"+
+			"• Generate professional developer assessments\n\n"+
+			"Get started by entering a GitHub username above!", ctrl.window)
+	})
+
+	ctrl.configUI.SetCancelButtonCallback(func() {
+		// For first run, we still want to save default config to avoid showing this again
+		defaultConfig := config.DefaultConfig()
+		ctrl.config = defaultConfig
+		config.SaveConfig(defaultConfig)
+		
+		// Update services with default config
+		ctrl.githubService = services.NewGitHubService(ctrl.config.GitHub)
+		ctrl.openaiService = services.NewOpenAIService(ctrl.config.OpenAI)
+		
+		configDialog.Hide()
+		
+		// Show information about skipping setup
+		dialog.ShowInformation("Setup Skipped", 
+			"Default configuration has been saved.\n\n"+
+			"Note: You'll need to configure your GitHub token and OpenAI API key "+
+			"via the Config button to perform analyses.", ctrl.window)
 	})
 
 	configDialog.Show()
