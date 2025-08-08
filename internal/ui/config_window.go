@@ -25,6 +25,8 @@ type ConfigWindowUI struct {
 	OpenAIKeyEntry        *widget.Entry
 	OpenAIModelEntry      *widget.Entry
 	SystemPromptEntry     *widget.Entry
+	HTMLTemplateEntry     *widget.Entry
+	CSSStylesEntry        *widget.Entry
 	// Buttons
 	SaveButton            *widget.Button
 	CancelButton          *widget.Button
@@ -45,6 +47,8 @@ func (ui *ConfigWindowUI) CreateConfigLayout() *fyne.Container {
 	githubTab := ui.createGitHubTab()
 	openaiTab := ui.createOpenAITab()
 	systemPromptTab := ui.createSystemPromptTab()
+	htmlTemplateTab := ui.createHTMLTemplateTab()
+	cssStylesTab := ui.createCSSStylesTab()
 	
 	// Create tabs
 	tabs := container.NewAppTabs()
@@ -52,6 +56,8 @@ func (ui *ConfigWindowUI) CreateConfigLayout() *fyne.Container {
 	tabs.Append(container.NewTabItem("GitHub", githubTab))
 	tabs.Append(container.NewTabItem("OpenAI", openaiTab))
 	tabs.Append(container.NewTabItem("System Prompt", systemPromptTab))
+	tabs.Append(container.NewTabItem("HTML Template", htmlTemplateTab))
+	tabs.Append(container.NewTabItem("CSS Styles", cssStylesTab))
 	
 	// Create buttons section
 	buttonsSection := ui.createButtonsSection()
@@ -102,6 +108,16 @@ func (ui *ConfigWindowUI) initializeComponents() {
 	ui.SystemPromptEntry.Wrapping = fyne.TextWrapOff // Disable line wrapping
 	ui.SystemPromptEntry.TextStyle = fyne.TextStyle{Monospace: true} // Use monospace font
 	// Remove fixed resize to allow proper expansion in tab layout
+	
+	ui.HTMLTemplateEntry = widget.NewMultiLineEntry()
+	ui.HTMLTemplateEntry.SetPlaceHolder("Enter custom HTML template for reports...")
+	ui.HTMLTemplateEntry.Wrapping = fyne.TextWrapOff // Disable line wrapping
+	ui.HTMLTemplateEntry.TextStyle = fyne.TextStyle{Monospace: true} // Use monospace font
+	
+	ui.CSSStylesEntry = widget.NewMultiLineEntry()
+	ui.CSSStylesEntry.SetPlaceHolder("Enter custom CSS styles for reports...")
+	ui.CSSStylesEntry.Wrapping = fyne.TextWrapOff // Disable line wrapping
+	ui.CSSStylesEntry.TextStyle = fyne.TextStyle{Monospace: true} // Use monospace font
 	
 	// Buttons
 	ui.SaveButton = widget.NewButton("Save", nil)
@@ -241,6 +257,56 @@ func (ui *ConfigWindowUI) createSystemPromptTab() *fyne.Container {
 	)
 }
 
+// createHTMLTemplateTab creates the HTML template editor tab
+func (ui *ConfigWindowUI) createHTMLTemplateTab() *fyne.Container {
+	title := widget.NewLabel("HTML Template Configuration")
+	title.TextStyle = fyne.TextStyle{Bold: true}
+	
+	description := widget.NewLabel("Customize the HTML template used for report generation. Use {{.Username}}, {{.Content}}, and {{.CSSStyles}} as placeholders. Leave empty to use the default template.")
+	description.Wrapping = fyne.TextWrapWord
+	description.TextStyle = fyne.TextStyle{Italic: true}
+	
+	// Create header section
+	headerSection := container.NewVBox(
+		title,
+		description,
+		widget.NewSeparator(),
+	)
+	
+	// Create the text area with proper multiline support
+	textAreaContainer := container.NewScroll(ui.HTMLTemplateEntry)
+	
+	// Use border layout to ensure text area expands to fill available space
+	return container.NewBorder(
+		headerSection, nil, nil, nil, textAreaContainer,
+	)
+}
+
+// createCSSStylesTab creates the CSS styles editor tab
+func (ui *ConfigWindowUI) createCSSStylesTab() *fyne.Container {
+	title := widget.NewLabel("CSS Styles Configuration")
+	title.TextStyle = fyne.TextStyle{Bold: true}
+	
+	description := widget.NewLabel("Customize the CSS styles used for report styling. This CSS will be embedded in the HTML template. Leave empty to use the default styles.")
+	description.Wrapping = fyne.TextWrapWord
+	description.TextStyle = fyne.TextStyle{Italic: true}
+	
+	// Create header section
+	headerSection := container.NewVBox(
+		title,
+		description,
+		widget.NewSeparator(),
+	)
+	
+	// Create the text area with proper multiline support
+	textAreaContainer := container.NewScroll(ui.CSSStylesEntry)
+	
+	// Use border layout to ensure text area expands to fill available space
+	return container.NewBorder(
+		headerSection, nil, nil, nil, textAreaContainer,
+	)
+}
+
 // LoadConfig loads configuration into the UI
 func (ui *ConfigWindowUI) LoadConfig(githubConfig *dto.GitHubConfig, openaiConfig *dto.OpenAIConfig) {
 	// Load GitHub configuration
@@ -263,6 +329,22 @@ func (ui *ConfigWindowUI) LoadConfig(githubConfig *dto.GitHubConfig, openaiConfi
 	} else {
 		// Display default system prompt for discoverability and easier editing
 		ui.SystemPromptEntry.SetText(dto.DefaultSystemPrompt())
+	}
+	
+	// Load HTML template - show default if no custom template is configured
+	if openaiConfig.HTMLTemplate != "" {
+		ui.HTMLTemplateEntry.SetText(openaiConfig.HTMLTemplate)
+	} else {
+		// Display default HTML template for discoverability and easier editing
+		ui.HTMLTemplateEntry.SetText(dto.DefaultHTMLTemplate())
+	}
+	
+	// Load CSS styles - show default if no custom styles are configured
+	if openaiConfig.CSSStyles != "" {
+		ui.CSSStylesEntry.SetText(openaiConfig.CSSStyles)
+	} else {
+		// Display default CSS styles for discoverability and easier editing
+		ui.CSSStylesEntry.SetText(dto.DefaultCSSStyles())
 	}
 }
 
@@ -310,6 +392,11 @@ func (ui *ConfigWindowUI) GetConfig() (*dto.GitHubConfig, *dto.OpenAIConfig, err
 	// Always save the current system prompt text
 	// The LoadConfig logic will handle showing default when appropriate
 	openaiConfig.SystemPrompt = ui.SystemPromptEntry.Text
+	
+	// Always save the current HTML template and CSS styles text
+	// The LoadConfig logic will handle showing default when appropriate
+	openaiConfig.HTMLTemplate = ui.HTMLTemplateEntry.Text
+	openaiConfig.CSSStyles = ui.CSSStylesEntry.Text
 	
 	return githubConfig, openaiConfig, nil
 }

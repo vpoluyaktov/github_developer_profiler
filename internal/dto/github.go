@@ -19,6 +19,8 @@ type OpenAIConfig struct {
 	APIKey       string `json:"api_key"`
 	Model        string `json:"model"`
 	SystemPrompt string `json:"system_prompt"`
+	HTMLTemplate string `json:"html_template"`
+	CSSStyles    string `json:"css_styles"`
 }
 
 // DefaultGitHubConfig returns default configuration
@@ -41,6 +43,8 @@ func DefaultOpenAIConfig() *OpenAIConfig {
 		APIKey:       "",
 		Model:        "gpt-4o",
 		SystemPrompt: DefaultSystemPrompt(),
+		HTMLTemplate: DefaultHTMLTemplate(),
+		CSSStyles:    DefaultCSSStyles(),
 	}
 }
 
