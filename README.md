@@ -1,6 +1,8 @@
 # GitHub Developer Profiler
-
-A tool that analyzes GitHub users' public repositories to show their coding skills and experience. Built with Go and Fyne, it uses data analysis and AI to create useful reports about developers.
+A GitHub developer assessment tool that analyzes users' public repositories to generate detailed insights about their coding skills, 
+technical expertise, and development patterns. Built with Go and Fyne, 
+it combines intelligent repository analysis with AI-powered code evaluation to create professional reports showcasing developer capabilities, 
+language proficiency, code quality metrics, and project complexity assessments.
 
 ## Features
 
@@ -61,14 +63,14 @@ A tool that analyzes GitHub users' public repositories to show their coding skil
 <img width="1578" height="934" alt="Screenshot 2025-08-11 at 12 01 50" src="https://github.com/user-attachments/assets/16b65937-89f2-43e4-a08d-a1f9d383be72" />
 
 *Note: A sample evaluation report is also available in PDF format:*
-[GitHub Developer Assessment - vpoluyaktov.pdf](https://github.com/user-attachments/files/21721595/GitHub.Developer.Assessment.-.vpoluyaktov.pdf)
+[report sample GitHub Developer Assessment](https://vpoluyaktov.github.io/github_developer_profiler/vpoluyaktov_github_assessment_2025-08-11_14-49-47.html)
 
 
 ## Installation
 
 ### Download Ready-to-Use App
 
-1. Go to the [GitHub Releases page](https://github.com/vpoluyaktov/github_developer_profiler/releases)
+1. Go to the [GitHub Releases page] (https://github.com/vpoluyaktov/github_developer_profiler/releases)
 2. Download the latest version for your system (Windows, macOS, or Linux)
 3. Extract the files to any folder
 4. Run the program (`github_developer_profiler` or `github_developer_profiler.exe`)
