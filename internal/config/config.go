@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"dev_profiler/internal/dto"
 	"dev_profiler/internal/utils"
 )
 
@@ -17,15 +16,15 @@ const (
 
 // Config holds application configuration
 type Config struct {
-	GitHub *dto.GitHubConfig `json:"github"`
-	OpenAI *dto.OpenAIConfig `json:"openai"`
+	GitHub *GitHubConfig `json:"github"`
+	OpenAI *OpenAIConfig `json:"openai"`
 }
 
 // DefaultConfig returns default configuration
 func DefaultConfig() *Config {
 	return &Config{
-		GitHub: dto.DefaultGitHubConfig(),
-		OpenAI: dto.DefaultOpenAIConfig(),
+		GitHub: DefaultGitHubConfig(),
+		OpenAI: DefaultOpenAIConfig(),
 	}
 }
 
@@ -83,12 +82,12 @@ func LoadConfig() (*Config, error) {
 
 	// Ensure GitHub config is not nil
 	if config.GitHub == nil {
-		config.GitHub = dto.DefaultGitHubConfig()
+		config.GitHub = DefaultGitHubConfig()
 	}
 
 	// Ensure OpenAI config is not nil
 	if config.OpenAI == nil {
-		config.OpenAI = dto.DefaultOpenAIConfig()
+		config.OpenAI = DefaultOpenAIConfig()
 	}
 
 	// Decrypt the GitHub token if it's not empty
@@ -139,7 +138,7 @@ func SaveConfig(config *Config) error {
 
 	// Create a copy of config for encryption
 	configCopy := *config
-	configCopy.GitHub = &dto.GitHubConfig{
+	configCopy.GitHub = &GitHubConfig{
 		SampledRepoCount:   config.GitHub.SampledRepoCount,
 		CommitsPerRepo:     config.GitHub.CommitsPerRepo,
 		SampleFileCount:    config.GitHub.SampleFileCount,
@@ -148,7 +147,7 @@ func SaveConfig(config *Config) error {
 		RandomSeed:         config.GitHub.RandomSeed,
 		SaveDebugJSON:      config.GitHub.SaveDebugJSON,
 	}
-	configCopy.OpenAI = &dto.OpenAIConfig{
+	configCopy.OpenAI = &OpenAIConfig{
 		Model:        config.OpenAI.Model,
 		SystemPrompt: config.OpenAI.SystemPrompt,
 		HTMLTemplate: config.OpenAI.HTMLTemplate,
