@@ -39,7 +39,10 @@ func TestGetConfigPath(t *testing.T) {
 	}
 	
 	expectedSuffix := filepath.Join(".config", ConfigDirName, ConfigFileName)
-	if !strings.HasSuffix(path, expectedSuffix) {
+	// Normalize paths for cross-platform comparison
+	normalizedPath := filepath.ToSlash(path)
+	normalizedSuffix := filepath.ToSlash(expectedSuffix)
+	if !strings.HasSuffix(normalizedPath, normalizedSuffix) {
 		t.Errorf("Config path should end with %s, got %s", expectedSuffix, path)
 	}
 }
@@ -59,7 +62,10 @@ func TestGetConfigDir(t *testing.T) {
 	}
 	
 	expectedSuffix := filepath.Join(".config", ConfigDirName)
-	if !strings.HasSuffix(dir, expectedSuffix) {
+	// Normalize paths for cross-platform comparison
+	normalizedDir := filepath.ToSlash(dir)
+	normalizedSuffix := filepath.ToSlash(expectedSuffix)
+	if !strings.HasSuffix(normalizedDir, normalizedSuffix) {
 		t.Errorf("Config dir should end with %s, got %s", expectedSuffix, dir)
 	}
 }
