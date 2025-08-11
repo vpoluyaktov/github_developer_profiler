@@ -101,8 +101,15 @@ jobs:
           zip -r "$ZIP_NAME" "GitHub Developer Profiler.app"
           echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
 
-      - name: Upload binary to release
-        if: matrix.os != 'macos-latest'
+      - name: Create Linux ZIP archive
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          ZIP_NAME="GitHub_Developer_Profiler-linux-${VERSION}-${{ matrix.goarch }}.zip"
+          zip "$ZIP_NAME" "GitHub_Developer_Profiler-${{ matrix.goos }}-${VERSION}-${{ matrix.goarch }}${{ matrix.ext }}"
+          echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
+
+      - name: Upload Windows binary to release
+        if: matrix.os == 'windows-latest'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -112,8 +119,8 @@ jobs:
           asset_name: GitHub_Developer_Profiler-${{ matrix.goos }}-${{ env.VERSION }}-${{ matrix.goarch }}${{ matrix.ext }}
           asset_content_type: application/octet-stream
 
-      - name: Upload macOS app bundle to release
-        if: matrix.os == 'macos-latest'
+      - name: Upload ZIP archive to release (Linux and macOS)
+        if: matrix.os != 'windows-latest'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -122,14 +129,3 @@ jobs:
           asset_path: ./${{ env.ZIP_NAME }}
           asset_name: ${{ env.ZIP_NAME }}
           asset_content_type: application/zip
-
-      - name: Upload raw binary to release (macOS)
-        if: matrix.os == 'macos-latest'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./GitHub_Developer_Profiler-${{ matrix.goos }}-${{ env.VERSION }}-${{ matrix.goarch }}${{ matrix.ext }}
-          asset_name: GitHub_Developer_Profiler-${{ matrix.goos }}-${{ env.VERSION }}-${{ matrix.goarch }}${{ matrix.ext }}
-          asset_content_type: application/octet-stream
