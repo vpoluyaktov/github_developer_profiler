@@ -1,7 +1,9 @@
 # GitHub Developer Profiler
 A GitHub developer assessment tool that analyzes users' public repositories to generate detailed insights about their coding skills, 
-technical expertise, and development patterns. Built with Go and Fyne, 
-it combines intelligent repository analysis with AI-powered code evaluation to create professional reports showcasing developer capabilities, 
+technical expertise, and development patterns. 
+
+Built with Go and Fyne, 
+it combines intelligent repository analysis with AI-powered code evaluation to create [professional reports](https://vpoluyaktov.github.io/github_developer_profiler/report_sample.html) showcasing developer capabilities, 
 language proficiency, code quality metrics, and project complexity assessments.
 
 ## Features
