@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Developer Assessment - vpoluyaktov</title>
+    
+    <!-- Prism.js CSS for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet" />
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .header {
+            padding: 40px 40px 30px 40px;
+            text-align: center;
+            border-bottom: 3px solid #3498db;
+            margin-bottom: 0;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+            color: #2c3e50;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            color: #7f8c8d;
+        }
+        
+        .content {
+            padding: 0 40px 40px 40px;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            color: #2c3e50;
+            margin-top: 2em;
+            margin-bottom: 1em;
+            font-weight: 600;
+        }
+        
+        h1 { font-size: 2.2em; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
+        h2 { font-size: 1.8em; color: #34495e; border-bottom: 2px solid #e74c3c; padding-bottom: 8px; }
+        h3 { font-size: 1.4em; color: #7f8c8d; border-bottom: 1px solid #bdc3c7; padding-bottom: 5px; }
+        h4 { font-size: 1.2em; color: #95a5a6; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e8e8e8;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9em;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        tr:hover {
+            background-color: #e3f2fd;
+            transition: background-color 0.3s ease;
+        }
+        
+        code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+            color: #e74c3c;
+            border: 1px solid #e1e8ed;
+        }
+        
+        pre {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            border-left: 4px solid #4299e1;
+            position: relative;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+            border: none;
+            color: inherit;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        blockquote {
+            border-left: 4px solid #3498db;
+            margin: 20px 0;
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+            color: #5a6c7d;
+        }
+        
+        ul, ol {
+            padding-left: 30px;
+            margin: 15px 0;
+        }
+        
+        li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+        
+        strong {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        em {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .print-button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .container { margin: 0; border-radius: 0; }
+            .header { padding: 20px; }
+            .header h1 { font-size: 1.8em; }
+            .content { padding: 20px; }
+            table { font-size: 0.9em; }
+            th, td { padding: 8px 10px; }
+            .print-button { 
+                position: relative;
+                top: auto;
+                right: auto;
+                margin: 10px auto;
+                display: block;
+                width: fit-content;
+            }
+        }
+        
+        /* Print styles */
+        @media print {
+            body { 
+                background: white;
+                color: black;
+            }
+            .container { 
+                box-shadow: none;
+                padding: 20px;
+            }
+            .print-button { display: none; }
+            h1, h2, h3 { color: black; }
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button" onclick="window.print()">🖨️ Print Report</button>
+    <div class="container">
+        <div class="header">
+            <h1>GitHub Developer Assessment</h1>
+            <p style="font-size: 1.2em; color: #7f8c8d; margin: 0;">Professional Technical Evaluation for <strong>vpoluyaktov</strong></p>
+        </div>
+        <div class="content">
+            <h2>User Overview</h2>
+
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Username</td>
+<td>vpoluyaktov</td>
+</tr>
+
+<tr>
+<td>Name</td>
+<td>Vladimir Poluyaktov</td>
+</tr>
+
+<tr>
+<td>Company</td>
+<td>Petabyte Technology Inc.</td>
+</tr>
+
+<tr>
+<td>Location</td>
+<td>Seattle</td>
+</tr>
+
+<tr>
+<td>Email</td>
+<td>vpoluyaktov@gmail.com</td>
+</tr>
+
+<tr>
+<td>GitHub Since</td>
+<td>2012-07-17T17:05:59Z</td>
+</tr>
+
+<tr>
+<td>Public Repos</td>
+<td>20</td>
+</tr>
+
+<tr>
+<td>Private Repos</td>
+<td>N/A</td>
+</tr>
+
+<tr>
+<td>Forked Repos</td>
+<td>13</td>
+</tr>
+
+<tr>
+<td>Public Gists</td>
+<td>0</td>
+</tr>
+
+<tr>
+<td>Followers</td>
+<td>1</td>
+</tr>
+
+<tr>
+<td>Following</td>
+<td>1</td>
+</tr>
+
+<tr>
+<td>Plan</td>
+<td>pro</td>
+</tr>
+
+<tr>
+<td>Last Update</td>
+<td>2025-07-28T19:48:28Z</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<h2>Project Summary</h2>
+
+<h3>Repository Overview</h3>
+
+<h4>Repository Statistics</h4>
+
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Count</th>
+<th>Details</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Total Repositories</td>
+<td>21</td>
+<td>Original: 8, Forked: 13</td>
+</tr>
+
+<tr>
+<td>Most Active Forks</td>
+<td>0</td>
+<td>With &gt;10 commits</td>
+</tr>
+
+<tr>
+<td>Total Stars</td>
+<td>25</td>
+<td>Across all repositories</td>
+</tr>
+</tbody>
+</table>
+
+<h4>Original Repositories</h4>
+
+<table>
+<thead>
+<tr>
+<th>Repository</th>
+<th>Stars</th>
+<th>Description</th>
+<th>Languages</th>
+<th>Created</th>
+<th>Last Updated</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>mp4_splitter</td>
+<td>0</td>
+<td>A command-line tool to split M4B audiobooks into individual chapter files</td>
+<td>Go, Shell</td>
+<td>2024-04-04T23:02:11Z</td>
+<td>2025-08-01T01:27:08Z</td>
+</tr>
+
+<tr>
+<td>cw-gen</td>
+<td>0</td>
+<td>A command-line tool to convert text into Morse code audio files</td>
+<td>Go</td>
+<td>2024-08-03T00:57:10Z</td>
+<td>2025-08-01T01:26:08Z</td>
+</tr>
+
+<tr>
+<td>github_evaluation_tool</td>
+<td>0</td>
+<td>GitHub developer assessment tool for OpenWeb UI</td>
+<td>Python</td>
+<td>2025-07-28T19:45:58Z</td>
+<td>2025-08-01T01:24:48Z</td>
+</tr>
+
+<tr>
+<td>abb_ia</td>
+<td>15</td>
+<td>Download a collection of .mp3 files from Internet Archive and create an audiobook in .m4b format</td>
+<td>Go, Shell</td>
+<td>2023-03-15T17:16:57Z</td>
+<td>2025-07-09T15:44:18Z</td>
+</tr>
+
+<tr>
+<td>pp_sdk</td>
+<td>0</td>
+<td>SDK for Product Partner</td>
+<td>N/A</td>
+<td>2024-09-08T16:39:00Z</td>
+<td>2025-05-21T21:41:49Z</td>
+</tr>
+
+<tr>
+<td>IA_audiobook_creator</td>
+<td>9</td>
+<td>Download a collection of .mp3 files from Internet Archive and create an audiobook in .m4b format</td>
+<td>Python, Shell</td>
+<td>2020-06-19T19:44:13Z</td>
+<td>2024-01-13T00:29:18Z</td>
+</tr>
+
+<tr>
+<td>EBook_audiobook_creator</td>
+<td>0</td>
+<td>Create an audiobook from an ebook</td>
+<td>Python</td>
+<td>2021-09-30T15:19:34Z</td>
+<td>2022-07-06T17:58:33Z</td>
+</tr>
+
+<tr>
+<td>morse-keyboard-pi</td>
+<td>0</td>
+<td>Morse keyboard and iambic keyer for Raspberry Pi</td>
+<td>Python</td>
+<td>2020-02-19T21:01:45Z</td>
+<td>2022-07-06T17:54:52Z</td>
+</tr>
+</tbody>
+</table>
+
+<h4>Forked Repositories</h4>
+
+<table>
+<thead>
+<tr>
+<th>Repository</th>
+<th>Source</th>
+<th>User Commits</th>
+<th>Stars</th>
+<th>Languages</th>
+<th>Last Updated</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>tview</td>
+<td>fork</td>
+<td>2</td>
+<td>0</td>
+<td>Go</td>
+<td>2023-12-14T00:56:54Z</td>
+</tr>
+
+<tr>
+<td>freeLib</td>
+<td>fork</td>
+<td>0</td>
+<td>0</td>
+<td>C++, C, PLpgSQL, &hellip;</td>
+<td>2023-02-09T19:43:45Z</td>
+</tr>
+
+<tr>
+<td>charts-1</td>
+<td>fork</td>
+<td>0</td>
+<td>0</td>
+<td>N/A</td>
+<td>2022-02-14T11:09:54Z</td>
+</tr>
+
+<tr>
+<td>bigquery-schema-generator</td>
+<td>fork</td>
+<td>0</td>
+<td>0</td>
+<td>N/A</td>
+<td>2021-10-27T22:50:35Z</td>
+</tr>
+
+<tr>
+<td>charts</td>
+<td>fork</td>
+<td>0</td>
+<td>0</td>
+<td>N/A</td>
+<td>2021-06-03T00:22:39Z</td>
+</tr>
+
+<tr>
+<td>cwwav</td>
+<td>fork</td>
+<td>0</td>
+<td>0</td>
+<td>N/A</td>
+<td>2020-02-16T22:57:40Z</td>
+</tr>
+
+<tr>
+<td>adonis-swagger</td>
+<td>fork</td>
+<td>0</td>
+<td>0</td>
+<td>N/A</td>
+<td>2018-09-04T18:42:06Z</td>
+</tr>
+
+<tr>
+<td>shinysdr</td>
+<td>fork</td>
+<td>0</td>
+<td>0</td>
+<td>N/A</td>
+<td>2018-03-27T23:26:49Z</td>
+</tr>
+
+<tr>
+<td>dump1090</td>
+<td>fork</td>
+<td>0</td>
+<td>0</td>
+<td>N/A</td>
+<td>2017-09-22T00:31:25Z</td>
+</tr>
+
+<tr>
+<td>rx_tools</td>
+<td>fork</td>
+<td>0</td>
+<td>0</td>
+<td>N/A</td>
+<td>2017-09-08T20:28:14Z</td>
+</tr>
+
+<tr>
+<td>docker-registry-frontend</td>
+<td>fork</td>
+<td>0</td>
+<td>0</td>
+<td>N/A</td>
+<td>2017-08-24T00:41:53Z</td>
+</tr>
+
+<tr>
+<td>docker-homebridge</td>
+<td>fork</td>
+<td>0</td>
+<td>0</td>
+<td>N/A</td>
+<td>2017-08-01T00:50:48Z</td>
+</tr>
+
+<tr>
+<td>ZoneMinder</td>
+<td>fork</td>
+<td>0</td>
+<td>1</td>
+<td>N/A</td>
+<td>2017-02-13T19:18:02Z</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<h2>Technical Assessment</h2>
+
+<h3>Code Quality Analysis</h3>
+
+<h4>mp4_splitter</h4>
+
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Assessment</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Architecture</td>
+<td>Modular CLI tool, clear separation (utils, logger, ffmpeg, models, splitter). Uses idiomatic Go structure.</td>
+</tr>
+
+<tr>
+<td>Error Handling</td>
+<td>Uses Go error wrapping, custom error types, and propagates errors with context.</td>
+</tr>
+
+<tr>
+<td>Testing</td>
+<td>Includes unit tests for utils, splitter, and error handling. Good coverage for edge cases.</td>
+</tr>
+
+<tr>
+<td>Documentation</td>
+<td>README and inline comments are present. Public functions are documented.</td>
+</tr>
+
+<tr>
+<td>Performance</td>
+<td>Efficient file operations, avoids unnecessary allocations. Uses streaming where possible.</td>
+</tr>
+</tbody>
+</table>
+
+<h4>cw-gen</h4>
+
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Assessment</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Architecture</td>
+<td>Single-file Go CLI, but well-organized. Uses CGo for MP3 encoding. Modular waveform generation.</td>
+</tr>
+
+<tr>
+<td>Error Handling</td>
+<td>Checks for errors on all I/O and external calls. Returns detailed error messages.</td>
+</tr>
+
+<tr>
+<td>Testing</td>
+<td>Includes tests for main logic.</td>
+</tr>
+
+<tr>
+<td>Documentation</td>
+<td>Inline comments and usage help.</td>
+</tr>
+
+<tr>
+<td>Performance</td>
+<td>Uses efficient math and buffer operations for audio generation.</td>
+</tr>
+</tbody>
+</table>
+
+<h4>abb_ia</h4>
+
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Assessment</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Architecture</td>
+<td>Multi-package Go app with MVC-like split (controller, dto, ui, utils).</td>
+</tr>
+
+<tr>
+<td>Error Handling</td>
+<td>Consistent error propagation, context-rich error messages.</td>
+</tr>
+
+<tr>
+<td>Testing</td>
+<td>Comprehensive test coverage for utils, sorting, and controller logic.</td>
+</tr>
+
+<tr>
+<td>Documentation</td>
+<td>Good README, inline comments, and docstrings.</td>
+</tr>
+
+<tr>
+<td>Performance</td>
+<td>Optimized for batch file operations and streaming.</td>
+</tr>
+</tbody>
+</table>
+
+<h4>IA_audiobook_creator</h4>
+
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Assessment</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Architecture</td>
+<td>Monolithic Python script, but logically split into functions.</td>
+</tr>
+
+<tr>
+<td>Error Handling</td>
+<td>Uses try/except throughout, handles edge cases (file not found, bad metadata).</td>
+</tr>
+
+<tr>
+<td>Testing</td>
+<td>Manual and some automated tests.</td>
+</tr>
+
+<tr>
+<td>Documentation</td>
+<td>Extensive docstrings and usage comments.</td>
+</tr>
+
+<tr>
+<td>Performance</td>
+<td>Uses subprocess for ffmpeg, handles large files in batches.</td>
+</tr>
+</tbody>
+</table>
+
+<h4>EBook_audiobook_creator</h4>
+
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Assessment</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Architecture</td>
+<td>Modular Python app with clear separation (utils, TTS engines, parsers).</td>
+</tr>
+
+<tr>
+<td>Error Handling</td>
+<td>Uses try/except, logs errors, and provides user feedback.</td>
+</tr>
+
+<tr>
+<td>Testing</td>
+<td>Includes test scripts for processors and TTS.</td>
+</tr>
+
+<tr>
+<td>Documentation</td>
+<td>Docstrings and inline comments.</td>
+</tr>
+
+<tr>
+<td>Performance</td>
+<td>Handles audio processing efficiently, leverages ffmpeg and TTS libraries.</td>
+</tr>
+</tbody>
+</table>
+
+<h4>morse-keyboard-pi</h4>
+
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Assessment</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Architecture</td>
+<td>Modular Python project, clear separation between UI, utils, and sound generation.</td>
+</tr>
+
+<tr>
+<td>Error Handling</td>
+<td>Handles device and file errors, provides user notifications.</td>
+</tr>
+
+<tr>
+<td>Testing</td>
+<td>Some unit and integration tests for sound and lookup modules.</td>
+</tr>
+
+<tr>
+<td>Documentation</td>
+<td>Inline comments, some docstrings.</td>
+</tr>
+
+<tr>
+<td>Performance</td>
+<td>Real-time audio and UI handling; uses numpy and pyaudio efficiently.</td>
+</tr>
+</tbody>
+</table>
+
+<h4>tview (fork)</h4>
+
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Assessment</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Architecture</td>
+<td>Minor changes to a mature Go TUI library. Maintains upstream structure.</td>
+</tr>
+
+<tr>
+<td>Error Handling</td>
+<td>Follows upstream conventions.</td>
+</tr>
+
+<tr>
+<td>Testing</td>
+<td>Upstream tests plus minor additions.</td>
+</tr>
+
+<tr>
+<td>Documentation</td>
+<td>Follows upstream documentation standards.</td>
+</tr>
+
+<tr>
+<td>Performance</td>
+<td>No regressions introduced.</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<h3>Representative Code</h3>
+
+<h4>Go: Smart String Truncation (mp4_splitter)</h4>
+
+<pre><code class="language-go">// SmartTruncate truncates a string to the specified maximum length while trying to
+// preserve word boundaries. It will:
+// 1. Try to truncate at the last space before maxLen
+// 2. If no space is found, truncate at a word boundary if possible
+// 3. If no word boundary is found, truncate at maxLen
+// 4. Add ellipsis (...) if the string was truncated.
+func SmartTruncate(s string, maxLen int) string {
+    if len(s) &lt;= maxLen {
+        return s
+    }
+    s = strings.TrimSuffix(s, &quot;...&quot;)
+    ellipsisLen := 3
+    if maxLen &lt;= ellipsisLen {
+        return s[:maxLen]
+    }
+    maxLen -= ellipsisLen
+    lastSpaceIdx := strings.LastIndex(s[:maxLen+1], &quot; &quot;)
+    if lastSpaceIdx &gt; maxLen/2 {
+        return s[:lastSpaceIdx] + &quot;...&quot;
+    }
+    // ... (see full code above)
+}
+</code></pre>
+
+<h4>Python: Audio Processing Pipeline (EBook_audiobook_creator)</h4>
+
+<pre><code class="language-python">for chapter in parser.book_chapters:
+    print('Narrating chapter {0}'.format(chapter['chapter_title']))
+    filename = 'chapter_' + str(chapter_no)
+    text = tts_engine.fix_pronunciation(chapter['chapter_text'])
+    parser.save_text_to_file(text, 'tmp/' + filename + '.txt')
+    if NARRATE_CHAPTERS:
+        tts_engine.saveTextToMp3(text, 'tmp/' + filename + '.mp3')
+    mp3_file_names.append(filename + '.mp3')
+    chapter_names.append(chapter['chapter_title'])
+    chapter_no += 1
+</code></pre>
+
+<h4>Go: GitHub API Client (abb_ia)</h4>
+
+<pre><code class="language-go">func (c *GithubClient) GetLatestVersion() (string, error) {
+    url := fmt.Sprintf(&quot;https://api.github.com/repos/%s/%s/releases/latest&quot;, c.repoOwner, c.repoName)
+    resp, err := http.Get(url)
+    if err != nil {
+        return &quot;&quot;, err
+    }
+    defer resp.Body.Close()
+    if resp.StatusCode != http.StatusOK {
+        return &quot;&quot;, fmt.Errorf(&quot;failed to fetch latest release: %s&quot;, resp.Status)
+    }
+    var release Release
+    err = json.NewDecoder(resp.Body).Decode(&amp;release)
+    if err != nil {
+        return &quot;&quot;, err
+    }
+    return release.TagName, nil
+}
+</code></pre>
+
+<hr />
+
+<h3>Technical Highlights</h3>
+
+<ul>
+<li><p><strong>Notable Implementations</strong>:</p>
+
+<ul>
+<li>Smart string/file name sanitization and truncation logic in Go (mp4_splitter).</li>
+<li>End-to-end audiobook creation pipelines, including TTS, audio normalization, and chapter metadata (Python).</li>
+<li>Modular CLI tools with robust flag parsing and error handling.</li>
+<li>Forked and improved open-source Go TUI library (tview) for custom UI needs.</li>
+</ul></li>
+
+<li><p><strong>Design Decisions</strong>:</p>
+
+<ul>
+<li>Preference for modular, testable code (Go: package separation, Python: utility modules).</li>
+<li>Consistent use of error propagation and logging.</li>
+<li>User-centric CLI design with clear feedback and help messages.</li>
+</ul></li>
+
+<li><p><strong>Areas for Improvement</strong>:</p>
+
+<ul>
+<li>Some monolithic scripts (notably in Python) could benefit from further modularization.</li>
+<li>More extensive use of type hints and static analysis in Python code.</li>
+<li>Increased use of CI/CD and automated linting across all projects.</li>
+<li>Broader adoption of docstring and API documentation standards.</li>
+</ul></li>
+</ul>
+
+<hr />
+
+<h2>Experience Level Assessment</h2>
+
+<h3>1. Technical Proficiency</h3>
+
+<h4>Architecture &amp; Design</h4>
+
+<ul>
+<li>Demonstrates strong understanding of modular CLI design in Go and Python.</li>
+<li>Implements cross-language solutions (Go, Python, Shell).</li>
+<li>Uses advanced Go features (custom error types, interfaces, CGo for audio encoding).</li>
+<li>Designs pipelines for complex tasks (audiobook creation, TTS, audio processing).</li>
+</ul>
+
+<h4>Implementation</h4>
+
+<ul>
+<li>Implements robust file and string utilities, audio processing, and API clients.</li>
+<li>Efficient use of standard libraries and third-party packages.</li>
+<li>Handles edge cases and provides user-friendly error messages.</li>
+</ul>
+
+<h4>Example: Go Error Handling</h4>
+
+<pre><code class="language-go">if err != nil {
+    return 0, fmt.Errorf(&quot;failed to get file size: %w&quot;, err)
+}
+</code></pre>
+
+<h3>2. Software Engineering Practices</h3>
+
+<h4>Code Quality</h4>
+
+<ul>
+<li>Consistent use of idiomatic Go and Python.</li>
+<li>Includes unit and integration tests for core logic.</li>
+<li>Uses logging and error reporting effectively.</li>
+</ul>
+
+<h4>Project Management</h4>
+
+<ul>
+<li>Frequent, descriptive commit messages.</li>
+<li>Uses feature branches and pull requests.</li>
+<li>Maintains and updates documentation and CI configs.</li>
+</ul>
+
+<h4>Example: Python Modularization</h4>
+
+<pre><code class="language-python">class AudioProcessor:
+    def noise_filter(self, sound_np_array, output_sample_rate, noise_samples_dir, voice_id):  
+        # ...
+</code></pre>
+
+<hr />
+
+<h2>Level Mapping</h2>
+
+<h3>Software Developer Level Matrix</h3>
+
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Google</th>
+<th>Amazon</th>
+<th>Microsoft</th>
+<th>Typical Experience</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><strong>Entry</strong></td>
+<td>L3 – Software Engineer</td>
+<td>SDE I</td>
+<td>Software Engineer (Level <sup>59</sup>&frasl;<sub>60</sub>)</td>
+<td>0–2 years</td>
+</tr>
+
+<tr>
+<td><strong>Mid</strong></td>
+<td>L4 – Software Engineer</td>
+<td>SDE II</td>
+<td>Software Engineer (Level <sup>61</sup>&frasl;<sub>62</sub>)</td>
+<td>2–5 years</td>
+</tr>
+
+<tr>
+<td><strong>Senior</strong></td>
+<td>L5 – Senior Software Engineer</td>
+<td>SDE III / Senior SDE</td>
+<td>Senior Software Engineer (Level 63)</td>
+<td>5–8 years</td>
+</tr>
+
+<tr>
+<td><strong>Staff</strong></td>
+<td>L6 – Staff Software Engineer</td>
+<td>Principal SDE</td>
+<td>Principal Software Engineer (Level 65)</td>
+<td>8–12 years</td>
+</tr>
+
+<tr>
+<td><strong>Senior Staff / Principal</strong></td>
+<td>L7 – Senior Staff Software Engineer / L8 – Principal Engineer</td>
+<td>Sr. Principal SDE or Sr. Engineer</td>
+<td>Partner / Distinguished Engineer (Level <sup>67</sup>&frasl;<sub>68</sub>)</td>
+<td>12–16+ years</td>
+</tr>
+
+<tr>
+<td><strong>Distinguished / Fellow</strong></td>
+<td>L9/10 – Distinguished Engineer / Google Fellow</td>
+<td>Sr. Principal / Distinguished Engineer</td>
+<td>Technical Fellow / CVP (Level <sup>69</sup>&frasl;<sub>70</sub>)</td>
+<td>Rare, Top 1%</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Assessment Criteria by Level</h3>
+
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Observed Examples</th>
+<th>Assessed Level</th>
+<th>Microsoft Equivalent</th>
+<th>Google Equivalent</th>
+<th>Amazon Equivalent</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Code Quality</td>
+<td>Modular Go/Python, idiomatic code, robust error handling, unit tests</td>
+<td>Senior</td>
+<td>Level 63</td>
+<td>L5</td>
+<td>SDE III / Senior SDE</td>
+</tr>
+
+<tr>
+<td>System Design</td>
+<td>CLI tools, modular pipelines, custom TUI, audio processing pipelines</td>
+<td>Senior</td>
+<td>Level 63</td>
+<td>L5</td>
+<td>SDE III / Senior SDE</td>
+</tr>
+
+<tr>
+<td>Testing</td>
+<td>Unit/integration tests, edge case coverage, test utilities</td>
+<td>Senior</td>
+<td>Level 63</td>
+<td>L5</td>
+<td>SDE III / Senior SDE</td>
+</tr>
+
+<tr>
+<td>Error Handling</td>
+<td>Consistent error propagation, user feedback, custom error types</td>
+<td>Senior</td>
+<td>Level 63</td>
+<td>L5</td>
+<td>SDE III / Senior SDE</td>
+</tr>
+
+<tr>
+<td>Documentation</td>
+<td>Good README, inline comments, usage help, but some scripts could be improved</td>
+<td>Senior</td>
+<td>Level 63</td>
+<td>L5</td>
+<td>SDE III / Senior SDE</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<h3>Overall Level Recommendation</h3>
+
+<p><strong>Senior Software Engineer</strong><br />
+- Microsoft: Level 63<br />
+- Google: L5<br />
+- Amazon: SDE III / Senior SDE</p>
+
+<p><strong>Justification:</strong><br />
+Vladimir demonstrates strong architectural skills, robust implementation of complex CLI and audio processing pipelines, and a mature approach to error handling and testing. The code is idiomatic, modular, and well-documented. There is clear evidence of technical leadership in open-source contributions (e.g., forking and extending tview), and the ability to deliver end-to-end solutions in both Go and Python. While some Python scripts could be further modularized, the overall engineering practices, code quality, and system design are consistent with a Senior Software Engineer at top-tier tech companies.</p>
+
+<hr />
+
+<h2>Summary &amp; Recommendation</h2>
+
+<p>Vladimir Poluyaktov is a highly capable software engineer with a strong track record of building robust, modular CLI tools and audio processing pipelines in both Go and Python. His repositories demonstrate:</p>
+
+<ul>
+<li><strong>Strong code quality</strong>: Idiomatic use of Go and Python, modular design, and comprehensive error handling.</li>
+<li><strong>Solid architecture</strong>: Well-structured CLI applications, modular pipelines, and custom tooling for audio and text processing.</li>
+<li><strong>Problem-solving ability</strong>: Tackles complex tasks such as TTS integration, audio normalization, and file management with practical, maintainable solutions.</li>
+<li><strong>Technical depth</strong>: Uses advanced language features, integrates with native libraries (CGo), and extends open-source projects.</li>
+<li><strong>Best practices</strong>: Maintains tests, documentation, and CI/CD configs; uses descriptive commits and PRs.</li>
+</ul>
+
+<p><strong>Recommendation:</strong><br />
+Vladimir is recommended for Senior Software Engineer roles (Microsoft Level 63, Google L5, Amazon SDE III/Senior SDE). He is well-suited for positions requiring ownership of complex backend, CLI, or tooling projects</p>
+
+        </div>
+    </div>
+    
+    <!-- Prism.js JavaScript for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    
+    <script>
+        // Initialize Prism.js after page load
+        document.addEventListener('DOMContentLoaded', function() {
+            Prism.highlightAll();
+        });
+    </script>
+</body>
+</html>
