@@ -14,6 +14,11 @@ import (
 )
 
 func TestGitHubServiceRepositoryAnalysis(t *testing.T) {
+	// Skip integration test in CI/CD environments
+	if os.Getenv("CI") != "" || os.Getenv("GITHUB_ACTIONS") != "" {
+		t.Skip("Skipping integration test in CI/CD environment")
+	}
+
 	// Load configuration from user's home directory
 	cfg, err := loadConfigFromHome()
 	if err != nil {
