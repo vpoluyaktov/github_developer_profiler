@@ -63,7 +63,7 @@ language proficiency, code quality metrics, and project complexity assessments.
 <img width="1578" height="934" alt="Screenshot 2025-08-11 at 12 01 50" src="https://github.com/user-attachments/assets/16b65937-89f2-43e4-a08d-a1f9d383be72" />
 
 *Note: A sample evaluation report is also available in PDF format:*
-[report sample GitHub Developer Assessment](https://vpoluyaktov.github.io/github_developer_profiler/docs/report_sample.html)
+[report sample GitHub Developer Assessment](https://vpoluyaktov.github.io/github_developer_profiler/report_sample.html)
 
 
 ## Installation
