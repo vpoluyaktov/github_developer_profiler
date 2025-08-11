@@ -1,49 +1,108 @@
 # GitHub Developer Profiler
 
-A comprehensive GitHub user technical assessment tool built with Go and Fyne GUI framework. This application performs automated audits of GitHub users' public repositories to provide detailed technical skill assessments and experience level evaluations.
+A tool that analyzes GitHub users' public repositories to show their coding skills and experience. Built with Go and Fyne, it uses data analysis and AI to create useful reports about developers.
 
 ## Features
 
-### Comprehensive GitHub Analysis
-- **User Profile Analysis**: Extracts complete GitHub profile information including account creation date, follower counts, and subscription plans
-- **Repository Assessment**: Analyzes both original and forked repositories with detailed metrics
-- **Code Quality Evaluation**: Samples and analyzes code files to assess programming skills and best practices
-- **Commit History Analysis**: Reviews recent commits to understand development patterns and activity levels
-- **Technology Stack Detection**: Identifies programming languages and technologies used across repositories
+### GitHub Data Analysis
+- **Profile Info**: Gets basic GitHub profile data like when account was created and follower count
+- **Repository Analysis**: Looks at both original and forked repositories
+- **Code Review**: Samples code files to check skills and practices
+- **Commit History**: Checks recent commits to see how the user codes
+- **Language Detection**: Finds which programming languages and tools the user knows
 
-### Smart Sampling & Analysis
-- **Configurable Sampling**: Customizable number of repositories, commits, and files to analyze
-- **Recent Activity Focus**: Prioritizes recently active repositories for more relevant assessments
-- **Reproducible Results**: Uses seeded random sampling for consistent evaluation results
-- **Fork Contribution Analysis**: Distinguishes between original work and fork contributions
-- **Robust Error Handling**: Gracefully handles private repository access issues, API rate limits, and network errors
+### Sampling & Analysis
+- **Adjustable Sampling**: Choose how many repositories, commits, and files to analyze
+- **Recent Activity**: Focuses on recently updated repositories for better results
+- **Consistent Results**: Uses fixed random sampling for repeatable results
+- **Fork Analysis**: Tells the difference between original work and forked projects
 
-### Modern GUI Interface
-- **Intuitive Design**: Clean, modern interface built with Fyne v2.6.1
-- **Real-time Progress**: Live progress indicators during analysis
-- **Configuration Management**: Easy-to-use configuration window for all parameters
-- **Results Export**: Save analysis results to JSON files
-- **Cross-platform**: Runs on Windows, macOS, and Linux
+### AI Features
+- **OpenAI Integration**: Uses OpenAI's GPT models to analyze GitHub profiles
+- **Editable System Prompt**: Change the instructions given to the AI
+- **HTML Reports**: Create HTML reports using your own templates
+- **CSS Styling**: Change how reports look with your own CSS
+- **Syntax Highlighting**: Code in reports is colored for easier reading
+
+
+### User Interface
+- **Simple Design**: Easy-to-use interface built with Fyne v2.6.1
+- **Progress Bars**: Shows analysis progress in real-time
+- **Settings Tabs**: Organized settings window with tabs
+- **First-Run Setup**: Setup wizard for new users
+- **Save Results**: Save results as HTML reports and JSON files
+- **Works Everywhere**: Runs on Windows, macOS, and Linux
+
+## Screenshots
+
+### Main Window
+
+[Screenshot: Main window with username input, analyze button, and results area]
+
+### Settings Window
+
+[Screenshot: Settings window with tabs for GitHub, OpenAI, etc.]
+
+### System Prompt Editor
+
+[Screenshot: System prompt editor tab]
+
+### HTML Template Editor
+
+[Screenshot: HTML template editor tab]
+
+### CSS Editor
+
+[Screenshot: CSS editor tab]
+
+### Example Evaluation Report
+
+[Screenshot: Example of a generated developer evaluation report]
+
+*Note: A sample evaluation report is also available in PDF format in the repository.*
 
 ## Installation
 
-### Prerequisites
+### Download Ready-to-Use App
+
+1. Go to the [GitHub Releases page](https://github.com/vpoluyaktov/github_developer_profiler/releases)
+2. Download the latest version for your system (Windows, macOS, or Linux)
+3. Extract the files to any folder
+4. Run the program (`github_developer_profiler` or `github_developer_profiler.exe`)
+
+#### Note for macOS Users
+
+When opening the app on macOS, you'll see a security warning because the app uses a self-signed certificate. To run it:
+
+1. Right-click (or Control-click) on the app icon
+2. Select "Open" from the menu
+3. Click "Open" in the popup window
+4. After the first time, you can open it normally
+
+### What You Need to Build from Source
 - Go 1.21 or later
 - Git
+- Fyne requirements (check [Fyne docs](https://developer.fyne.io/started/) for your system)
 
 ### Building from Source
 
 ```bash
-git clone <repository-url>
-cd dev_profiler
+# Clone the repository
+git clone https://github.com/vpoluyaktov/github_developer_profiler.git
+cd github_developer_profiler
+
+# Install dependencies
 go mod tidy
-go build -o dev_profiler .
+
+# Build the application
+go build -o github_developer_profiler .
 ```
 
 ### Running the Application
 
 ```bash
-./dev_profiler
+# Run the built executable
+./github_developer_profiler
 ```
 
 Or run directly with Go:
@@ -52,9 +111,16 @@ Or run directly with Go:
 go run .
 ```
 
-## Configuration
+### Command Line Options
 
-The application uses a configuration file stored in your home directory (`dev_profiler_config.json`). You can configure:
+```bash
+# Show version information
+./github_developer_profiler --version
+```
+
+## Settings
+
+The app saves settings in your home folder (`~/.dev_profiler/config.json`). When you first run the app, a setup wizard helps you configure it. You can set:
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
@@ -65,6 +131,12 @@ The application uses a configuration file stored in your home directory (`dev_pr
 | `analysis_years` | 5 | Years of repository activity to consider |
 | `include_private_repos` | false | Include private repositories if token allows |
 | `random_seed` | 42 | Seed for reproducible sampling |
+| `save_debug_json` | false | Save raw analysis data as JSON for debugging |
+| `openai_api_key` | "" | OpenAI API key for AI-powered analysis |
+| `openai_model` | "gpt-4" | OpenAI model to use for analysis |
+| `system_prompt` | *template* | Customizable system prompt for AI analysis |
+| `html_template` | *template* | Customizable HTML template for reports |
+| `css_styles` | *template* | Customizable CSS styles for reports |
 
 ### GitHub Token Setup
 
@@ -72,35 +144,32 @@ The application uses a configuration file stored in your home directory (`dev_pr
 2. Generate a new token with `repo` scope (for private repos) or `public_repo` scope
 3. Enter the token in the application's configuration window
 
-## Usage
+### OpenAI API Key Setup
 
-1. **Launch the Application**: Run the executable or use `go run .`
-2. **Enter Username**: Type the GitHub username you want to analyze
-3. **Configure Settings** (Optional): Click "Configuration" to adjust analysis parameters
-4. **Start Analysis**: Click "Analyze GitHub Profile" to begin the assessment
-5. **View Results**: The analysis results will appear in JSON format in the results area
-6. **Save Results**: Use the "Save Results" button to export the analysis to a file
+1. Go to [OpenAI's website](https://platform.openai.com/) and sign up or log in
+2. Navigate to the [API keys section](https://platform.openai.com/api-keys)
+3. Click "Create new secret key" and give it a name
+4. Copy the key immediately (you won't be able to see it again)
+5. Enter the key in the OpenAI tab of the configuration window
+6. Choose a model (like "gpt-4" or "gpt-3.5-turbo")
 
-## Architecture
+**Note**: OpenAI API usage incurs costs based on your usage. Check [OpenAI's pricing page](https://openai.com/pricing) for current rates.
 
-The application follows a clean, modular architecture:
+## How to Use
 
-```
-internal/
-├── app/           # Application entry point
-├── controllers/   # Business logic and UI event handling
-├── dto/           # Data transfer objects and structures
-├── config/        # Configuration management
-├── services/      # GitHub API integration and analysis logic
-├── ui/            # GUI components and layouts
-└── utils/         # Utility functions and version info
-```
+1. **Start the App**: Run the program or use `go run .`
+   - First-time users will see a setup wizard
+2. **Enter Username**: Type in the GitHub username to analyze
+3. **Change Settings** (Optional): Click "Configuration" to adjust options
+4. **Run Analysis**: Click "Analyze GitHub Profile" to start
+5. **See Results**: Results will show in the main window
+   - With OpenAI API key: you get AI analysis
+   - Without API key: you get raw JSON data
+6. **Save Results**: Click "Save Results" to export
+   - HTML reports save to `~/github_reports/` folder
+   - Reports open in your web browser
+   - Debug files save to the same folder if enabled
 
-## Dependencies
-
-- **Fyne v2.6.1**: Cross-platform GUI framework
-- **go-github v62**: GitHub API client library
-- **oauth2**: OAuth2 authentication for GitHub API
 
 ## License
 
