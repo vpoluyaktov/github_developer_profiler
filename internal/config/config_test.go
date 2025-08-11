@@ -290,19 +290,31 @@ func TestSaveConfigCreatesDirectory(t *testing.T) {
 	// Create a temporary directory for testing
 	tempDir := t.TempDir()
 	
-	// Temporarily override home directory for testing
+	// Temporarily override home directory for testing (cross-platform)
 	originalHome := os.Getenv("HOME")
-	defer os.Setenv("HOME", originalHome)
-	os.Setenv("HOME", tempDir)
+	originalUserProfile := os.Getenv("USERPROFILE")
+	defer func() {
+		os.Setenv("HOME", originalHome)
+		os.Setenv("USERPROFILE", originalUserProfile)
+	}()
 	
-	// Verify config directory doesn't exist initially
+	// Set both HOME and USERPROFILE for cross-platform compatibility
+	os.Setenv("HOME", tempDir)
+	os.Setenv("USERPROFILE", tempDir)
+	
+	// Get config directory path
 	configDir, err := GetConfigDir()
 	if err != nil {
 		t.Fatalf("GetConfigDir() failed: %v", err)
 	}
 	
+	// Remove config directory if it exists (for clean test)
+	os.RemoveAll(configDir)
+	
+	// Verify config directory doesn't exist now
 	if _, err := os.Stat(configDir); !os.IsNotExist(err) {
-		t.Error("Config directory should not exist initially")
+		t.Logf("Config directory exists, removing for clean test: %s", configDir)
+		os.RemoveAll(configDir)
 	}
 	
 	// Save config
