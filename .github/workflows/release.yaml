@@ -62,7 +62,11 @@ jobs:
 
       - name: Extract version
         id: extract_version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+        shell: bash
+        run: |
+          VERSION=$(echo "$GITHUB_REF" | sed 's|refs/tags/||')
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Extracted version: $VERSION"
 
       - name: Build for ${{ matrix.goos }}-${{ matrix.goarch }}
         shell: bash
