@@ -36,30 +36,33 @@ A tool that analyzes GitHub users' public repositories to show their coding skil
 ## Screenshots
 
 ### Main Window
+<img width="806" height="634" alt="Screenshot 2025-08-11 at 11 17 49" src="https://github.com/user-attachments/assets/24fc80ef-fd97-40a8-aac1-4a966eb57263" />
 
-[Screenshot: Main window with username input, analyze button, and results area]
+### Credentials Settings Window
+<img width="810" height="638" alt="Screenshot 2025-08-11 at 11 26 54" src="https://github.com/user-attachments/assets/b5e18484-2778-4463-98da-478d48c4c26f" />
 
-### Settings Window
 
-[Screenshot: Settings window with tabs for GitHub, OpenAI, etc.]
+### Github Analysis Settings Window
+<img width="807" height="638" alt="Screenshot 2025-08-11 at 11 27 05" src="https://github.com/user-attachments/assets/cc0915f4-9e7c-4309-a093-11d3e2545c85" />
+
+### OpenAI Settings Page
+<img width="804" height="636" alt="Screenshot 2025-08-11 at 11 27 21" src="https://github.com/user-attachments/assets/0f5abc2f-e9f8-413c-84c8-25956803d6d4" />
+
 
 ### System Prompt Editor
+<img width="808" height="634" alt="Screenshot 2025-08-11 at 11 27 31" src="https://github.com/user-attachments/assets/c07a7c65-f03e-4cc1-a059-e079c75897f6" />
 
-[Screenshot: System prompt editor tab]
 
 ### HTML Template Editor
+<img width="809" height="636" alt="Screenshot 2025-08-11 at 11 27 52" src="https://github.com/user-attachments/assets/9406fa50-32a8-4b71-987a-f34645535cfa" />
 
-[Screenshot: HTML template editor tab]
-
-### CSS Editor
-
-[Screenshot: CSS editor tab]
 
 ### Example Evaluation Report
+<img width="1578" height="934" alt="Screenshot 2025-08-11 at 12 01 50" src="https://github.com/user-attachments/assets/16b65937-89f2-43e4-a08d-a1f9d383be72" />
 
-[Screenshot: Example of a generated developer evaluation report]
+*Note: A sample evaluation report is also available in PDF format:*
+[GitHub Developer Assessment - vpoluyaktov.pdf](https://github.com/user-attachments/files/21721595/GitHub.Developer.Assessment.-.vpoluyaktov.pdf)
 
-*Note: A sample evaluation report is also available in PDF format in the repository.*
 
 ## Installation
 
