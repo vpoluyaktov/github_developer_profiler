@@ -7,7 +7,7 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 
-	"dev_profiler/internal/dto"
+	"dev_profiler/internal/config"
 )
 
 // ConfigWindowUI represents the UI components for the configuration window
@@ -308,7 +308,7 @@ func (ui *ConfigWindowUI) createCSSStylesTab() *fyne.Container {
 }
 
 // LoadConfig loads configuration into the UI
-func (ui *ConfigWindowUI) LoadConfig(githubConfig *dto.GitHubConfig, openaiConfig *dto.OpenAIConfig) {
+func (ui *ConfigWindowUI) LoadConfig(githubConfig *config.GitHubConfig, openaiConfig *config.OpenAIConfig) {
 	// Load GitHub configuration
 	ui.TokenEntry.SetText(githubConfig.Token)
 	ui.SampledRepoCountEntry.SetText(strconv.Itoa(githubConfig.SampledRepoCount))
@@ -328,7 +328,7 @@ func (ui *ConfigWindowUI) LoadConfig(githubConfig *dto.GitHubConfig, openaiConfi
 		ui.SystemPromptEntry.SetText(openaiConfig.SystemPrompt)
 	} else {
 		// Display default system prompt for discoverability and easier editing
-		ui.SystemPromptEntry.SetText(dto.DefaultSystemPrompt())
+		ui.SystemPromptEntry.SetText(config.DefaultSystemPrompt())
 	}
 	
 	// Load HTML template - show default if no custom template is configured
@@ -336,7 +336,7 @@ func (ui *ConfigWindowUI) LoadConfig(githubConfig *dto.GitHubConfig, openaiConfi
 		ui.HTMLTemplateEntry.SetText(openaiConfig.HTMLTemplate)
 	} else {
 		// Display default HTML template for discoverability and easier editing
-		ui.HTMLTemplateEntry.SetText(dto.DefaultHTMLTemplate())
+		ui.HTMLTemplateEntry.SetText(config.DefaultHTMLTemplate())
 	}
 	
 	// Load CSS styles - show default if no custom styles are configured
@@ -344,14 +344,14 @@ func (ui *ConfigWindowUI) LoadConfig(githubConfig *dto.GitHubConfig, openaiConfi
 		ui.CSSStylesEntry.SetText(openaiConfig.CSSStyles)
 	} else {
 		// Display default CSS styles for discoverability and easier editing
-		ui.CSSStylesEntry.SetText(dto.DefaultCSSStyles())
+		ui.CSSStylesEntry.SetText(config.DefaultCSSStyles())
 	}
 }
 
 // GetConfig returns the configuration from the UI
-func (ui *ConfigWindowUI) GetConfig() (*dto.GitHubConfig, *dto.OpenAIConfig, error) {
-	githubConfig := &dto.GitHubConfig{}
-	openaiConfig := &dto.OpenAIConfig{}
+func (ui *ConfigWindowUI) GetConfig() (*config.GitHubConfig, *config.OpenAIConfig, error) {
+	githubConfig := &config.GitHubConfig{}
+	openaiConfig := &config.OpenAIConfig{}
 	
 	// Get GitHub configuration
 	githubConfig.Token = ui.TokenEntry.Text
@@ -403,8 +403,8 @@ func (ui *ConfigWindowUI) GetConfig() (*dto.GitHubConfig, *dto.OpenAIConfig, err
 
 // ResetToDefaults resets all fields to default values
 func (ui *ConfigWindowUI) ResetToDefaults() {
-	githubDefaults := dto.DefaultGitHubConfig()
-	openaiDefaults := dto.DefaultOpenAIConfig()
+	githubDefaults := config.DefaultGitHubConfig()
+	openaiDefaults := config.DefaultOpenAIConfig()
 	ui.LoadConfig(githubDefaults, openaiDefaults)
 }
 

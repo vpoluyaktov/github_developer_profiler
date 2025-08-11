@@ -12,17 +12,18 @@ import (
 	"github.com/russross/blackfriday/v2"
 	"github.com/sashabaranov/go-openai"
 
+	"dev_profiler/internal/config"
 	"dev_profiler/internal/dto"
 )
 
 // OpenAIService handles OpenAI API interactions
 type OpenAIService struct {
 	client *openai.Client
-	config *dto.OpenAIConfig
+	config *config.OpenAIConfig
 }
 
 // NewOpenAIService creates a new OpenAI service
-func NewOpenAIService(config *dto.OpenAIConfig) *OpenAIService {
+func NewOpenAIService(config *config.OpenAIConfig) *OpenAIService {
 	var client *openai.Client
 	if config.APIKey != "" {
 		client = openai.NewClient(config.APIKey)
@@ -111,7 +112,7 @@ func (s *OpenAIService) getSystemPrompt() string {
 		return s.config.SystemPrompt
 	}
 	// Fallback to default system prompt if not configured
-	return dto.DefaultSystemPrompt()
+	return config.DefaultSystemPrompt()
 }
 
 // ConvertMarkdownToHTML converts markdown content to a complete HTML document using configurable templates
@@ -159,7 +160,7 @@ func (s *OpenAIService) getHTMLTemplate() string {
 		return s.config.HTMLTemplate
 	}
 	// Fallback to default HTML template if not configured
-	return dto.DefaultHTMLTemplate()
+	return config.DefaultHTMLTemplate()
 }
 
 // getCSSStyles returns the configurable CSS styles from config
@@ -169,7 +170,7 @@ func (s *OpenAIService) getCSSStyles() string {
 		return s.config.CSSStyles
 	}
 	// Fallback to default CSS styles if not configured
-	return dto.DefaultCSSStyles()
+	return config.DefaultCSSStyles()
 }
 
 // fallbackHTMLGeneration provides a simple HTML generation fallback

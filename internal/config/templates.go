@@ -1,4 +1,4 @@
-package dto
+package config
 
 // DefaultSystemPrompt returns the default system prompt for GitHub user evaluation
 func DefaultSystemPrompt() string {
@@ -202,38 +202,21 @@ func DefaultHTMLTemplate() string {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GitHub Developer Assessment - {{.Username}}</title>
-    
-    <!-- Prism.js CSS for syntax highlighting -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet" />
-    
     <style>
         {{.CSSStyles}}
     </style>
 </head>
 <body>
-    <button class="print-button" onclick="window.print()">🖨️ Print Report</button>
+    <button class="print-button" onclick="window.print()">Print Report</button>
     <div class="container">
         <div class="header">
             <h1>GitHub Developer Assessment</h1>
-            <p style="font-size: 1.2em; color: #7f8c8d; margin: 0;">Professional Technical Evaluation for <strong>{{.Username}}</strong></p>
+            <h2>{{.Username}}</h2>
         </div>
         <div class="content">
             {{.Content}}
         </div>
     </div>
-    
-    <!-- Prism.js JavaScript for syntax highlighting -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
-    
-    <script>
-        // Initialize Prism.js after page load
-        document.addEventListener('DOMContentLoaded', function() {
-            Prism.highlightAll();
-        });
-    </script>
 </body>
 </html>`
 }
@@ -241,59 +224,72 @@ func DefaultHTMLTemplate() string {
 // DefaultCSSStyles returns the default CSS styles for the report
 func DefaultCSSStyles() string {
 	return `body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-            color: #2c3e50;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             margin: 0;
             padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            color: #333;
         }
         
         .container {
             max-width: 1200px;
             margin: 0 auto;
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             overflow: hidden;
-            position: relative;
         }
         
         .header {
-            padding: 40px 40px 30px 40px;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 40px;
             text-align: center;
-            border-bottom: 3px solid #3498db;
-            margin-bottom: 0;
         }
         
         .header h1 {
-            margin: 0;
+            margin: 0 0 10px 0;
             font-size: 2.5em;
             font-weight: 300;
-            color: #2c3e50;
+            letter-spacing: 2px;
         }
         
-        .header p {
-            margin: 10px 0 0 0;
-            font-size: 1.2em;
-            color: #7f8c8d;
+        .header h2 {
+            margin: 0;
+            font-size: 1.5em;
+            font-weight: 300;
+            opacity: 0.9;
+            color: #ecf0f1;
         }
         
         .content {
-            padding: 0 40px 40px 40px;
+            padding: 40px;
         }
         
-        h1, h2, h3, h4, h5, h6 {
-            color: #2c3e50;
-            margin-top: 2em;
-            margin-bottom: 1em;
-            font-weight: 600;
+        h1 { 
+            color: #2c3e50; 
+            border-bottom: 3px solid #3498db; 
+            padding-bottom: 10px; 
+            margin-top: 30px;
+            font-size: 2em;
         }
         
-        h1 { font-size: 2.2em; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
-        h2 { font-size: 1.8em; color: #34495e; border-bottom: 2px solid #e74c3c; padding-bottom: 8px; }
-        h3 { font-size: 1.4em; color: #7f8c8d; border-bottom: 1px solid #bdc3c7; padding-bottom: 5px; }
+        h2 { 
+            color: #34495e; 
+            margin-top: 25px; 
+            font-size: 1.6em;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        
+        h3 { 
+            color: #7f8c8d; 
+            margin-top: 20px; 
+            font-size: 1.4em;
+        }
+        
         h4 { font-size: 1.2em; color: #95a5a6; }
         
         table {

@@ -13,17 +13,18 @@ import (
 	"github.com/google/go-github/v62/github"
 	"golang.org/x/oauth2"
 
+	"dev_profiler/internal/config"
 	"dev_profiler/internal/dto"
 )
 
 // GitHubService handles GitHub API interactions
 type GitHubService struct {
 	client *github.Client
-	config *dto.GitHubConfig
+	config *config.GitHubConfig
 }
 
 // NewGitHubService creates a new GitHub service
-func NewGitHubService(config *dto.GitHubConfig) *GitHubService {
+func NewGitHubService(config *config.GitHubConfig) *GitHubService {
 	var client *github.Client
 	
 	if config.Token != "" {
@@ -514,7 +515,7 @@ func (s *GitHubService) PerformFullAudit(ctx context.Context, username string) (
 }
 
 // getSanitizedConfig returns a copy of the config with sensitive information removed
-func (s *GitHubService) getSanitizedConfig() dto.GitHubConfig {
+func (s *GitHubService) getSanitizedConfig() config.GitHubConfig {
 	// Create a copy of the config without the token
 	sanitizedConfig := *s.config
 	sanitizedConfig.Token = "[REDACTED]"

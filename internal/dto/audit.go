@@ -1,52 +1,9 @@
 package dto
 
-import "time"
-
-// GitHubConfig holds GitHub API configuration
-type GitHubConfig struct {
-	Token              string `json:"token"`
-	SampledRepoCount   int    `json:"sampled_repo_count"`
-	CommitsPerRepo     int    `json:"commits_per_repo"`
-	SampleFileCount    int    `json:"sample_file_count"`
-	AnalysisYears      int    `json:"analysis_years"`
-	IncludePrivateRepo bool   `json:"include_private_repos"`
-	RandomSeed         int    `json:"random_seed"`
-	SaveDebugJSON      bool   `json:"save_debug_json"`
-}
-
-// OpenAIConfig holds OpenAI API configuration
-type OpenAIConfig struct {
-	APIKey       string `json:"api_key"`
-	Model        string `json:"model"`
-	SystemPrompt string `json:"system_prompt"`
-	HTMLTemplate string `json:"html_template"`
-	CSSStyles    string `json:"css_styles"`
-}
-
-// DefaultGitHubConfig returns default configuration
-func DefaultGitHubConfig() *GitHubConfig {
-	return &GitHubConfig{
-		Token:              "",
-		SampledRepoCount:   10,
-		CommitsPerRepo:     50,
-		SampleFileCount:    3,
-		AnalysisYears:      5,
-		IncludePrivateRepo: false,
-		RandomSeed:         42,
-		SaveDebugJSON:      false,
-	}
-}
-
-// DefaultOpenAIConfig returns default OpenAI configuration
-func DefaultOpenAIConfig() *OpenAIConfig {
-	return &OpenAIConfig{
-		APIKey:       "",
-		Model:        "gpt-4o",
-		SystemPrompt: DefaultSystemPrompt(),
-		HTMLTemplate: DefaultHTMLTemplate(),
-		CSSStyles:    DefaultCSSStyles(),
-	}
-}
+import (
+	"time"
+	"dev_profiler/internal/config"
+)
 
 // UserInfo represents GitHub user information
 type UserInfo struct {
@@ -118,7 +75,7 @@ type AuditResult struct {
 	RepoStats       RepoStats        `json:"repo_stats"`
 	FileAnalysis    []*FileAnalysis  `json:"file_analysis"`
 	CommitDetails   []*CommitDetail  `json:"commit_details"`
-	AuditParameters GitHubConfig     `json:"audit_parameters"`
+	AuditParameters config.GitHubConfig     `json:"audit_parameters"`
 	AnalysisSummary AnalysisSummary  `json:"analysis_summary"`
 }
 
