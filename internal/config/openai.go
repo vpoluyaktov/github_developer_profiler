@@ -13,7 +13,7 @@ type OpenAIConfig struct {
 func DefaultOpenAIConfig() *OpenAIConfig {
 	return &OpenAIConfig{
 		APIKey:       "",
-		Model:        "gpt-4o",
+		Model:        "gpt-4.1",
 		SystemPrompt: DefaultSystemPrompt(),
 		HTMLTemplate: DefaultHTMLTemplate(),
 		CSSStyles:    DefaultCSSStyles(),
