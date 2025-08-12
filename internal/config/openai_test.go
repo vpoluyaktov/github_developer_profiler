@@ -41,7 +41,7 @@ func TestOpenAIConfigDefaults(t *testing.T) {
 	cfg := DefaultOpenAIConfig()
 	
 	// Verify the model is a reasonable default
-	expectedModels := []string{"gpt-4", "gpt-4-turbo", "gpt-3.5-turbo", "gpt-4o"}
+	expectedModels := []string{"gpt-4", "gpt-4-turbo", "gpt-3.5-turbo", "gpt-4o", "gpt-4.1"}
 	modelValid := false
 	for _, model := range expectedModels {
 		if cfg.Model == model {
